@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const app = express();
-const port = 3000;
+const port =process.env.PORT || 3000;
 
 // Importar rutas
 const whatsappRoutes = require('./routes/whatsapp');
