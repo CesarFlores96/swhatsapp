@@ -1,26 +1,23 @@
-// app.js
 const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const app = express();
-const port =process.env.PORT || 3000;
+const router = express.Router();
+const puppeteer = require('puppeteer');
 
-// Importar rutas
-const whatsappRoutes = require('./routes/whatsapp');
+router.get('/', async (req, res) => {
+    try {
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        });
+        const page = await browser.newPage();
+        await page.goto('https://example.com');
+        await browser.close();
 
-// Middlewares
-app.use(cors());
-app.use(bodyParser.json());
-
-// Usar rutas
-app.use('/api/whatsapp', whatsappRoutes);
-
-// Manejo de errores
-app.use((err, req, res, next) => {
-    console.error('Error:', err);
-    res.status(500).json({ error: 'Error interno del servidor' });
+        res.json({ message: 'Puppeteer se ejecutó correctamente' });
+    } catch (error) {
+        console.error('Error con Puppeteer:', error);
+        res.status(500).json({ error: 'Error ejecutando Puppeteer' });
+    }
 });
 
-app.listen(port, () => {
-    console.log(`Servidor escuchando en http://localhost:${port}`);
-});
+module.exports = router;
+
